@@ -7,6 +7,17 @@
   --lime: #6eff5f;
   --white: #f9fcff;
   --panel: rgba(18, 9, 45, 0.78);
+  --game-bg: #03040c;
+  --game-grid: rgba(46, 255, 255, 0.08);
+  --snake-head: #6eff5f;
+  --snake-body: #2effff;
+  --snake-food: #ff3dbf;
+  --tile-empty: #1d1b3c;
+  --tile-low: #52f6ff;
+  --tile-mid: #66ff8e;
+  --tile-high: #fff033;
+  --tile-ultra: #ff8b50;
+  --tile-max: #ff45e6;
 }
 
 * {
@@ -140,6 +151,7 @@ body::before {
   border: 2px solid rgba(46, 255, 255, 0.45);
   border-radius: 18px;
   overflow: hidden;
+  position: relative;
   box-shadow: 0 0 16px rgba(46, 255, 255, 0.28), inset 0 0 16px rgba(255, 61, 191, 0.15);
   transform: translateY(0);
   transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
@@ -167,29 +179,61 @@ body::before {
   object-fit: cover;
 }
 
+.top-bar {
+  width: min(1100px, 100%);
+  margin: 0.9rem auto 0;
+  padding: 0 0.4rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.6rem;
+  position: relative;
+  z-index: 2;
+}
+
+.top-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  align-items: flex-end;
+}
+
+.small-button {
+  color: var(--white);
+  text-decoration: none;
+  border: 2px solid var(--cyan);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 0.55rem 0.7rem;
+  font-family: inherit;
+  font-size: 0.56rem;
+  cursor: pointer;
+  box-shadow: 0 0 12px rgba(46, 255, 255, 0.35);
+}
+
+.small-button:hover {
+  border-color: var(--yellow);
+}
+
 .game-page {
-  padding: 1rem;
+  padding: 0.2rem 1rem 1rem;
   min-height: 100vh;
 }
 
 .back-button {
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
   color: var(--white);
   text-decoration: none;
   border: 2px solid var(--cyan);
   border-radius: 12px;
-  background: rgba(0, 0, 0, 0.45);
-  padding: 0.7rem 0.9rem;
-  font-size: 0.62rem;
-  z-index: 10;
-  box-shadow: 0 0 12px rgba(46, 255, 255, 0.4);
+  background: rgba(0, 0, 0, 0.5);
+  padding: 0.55rem 0.7rem;
+  font-size: 0.56rem;
+  box-shadow: 0 0 12px rgba(46, 255, 255, 0.35);
 }
 
 .game-wrapper {
   width: min(900px, 100%);
-  margin: 3.6rem auto 1.5rem;
+  margin: 1.1rem auto 1.5rem;
   display: grid;
   gap: 1rem;
   justify-items: center;
@@ -245,7 +289,7 @@ body::before {
 .game-canvas {
   border: 3px solid var(--cyan);
   box-shadow: 0 0 24px rgba(46, 255, 255, 0.5);
-  background: #03040c;
+  background: var(--game-bg);
   image-rendering: pixelated;
 }
 
@@ -273,6 +317,121 @@ body::before {
   padding: 0.5rem 0;
 }
 
+.shop-grid {
+  width: min(850px, 100%);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.shop-card {
+  background: var(--panel);
+  border: 2px solid rgba(255, 240, 51, 0.35);
+  border-radius: 16px;
+  padding: 1rem;
+  display: grid;
+  gap: 0.8rem;
+  text-align: left;
+}
+
+.shop-card .game-button[disabled] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.lock-badge {
+  font-size: 0.55rem;
+  color: var(--yellow);
+  margin: 0.3rem 0 0.8rem;
+  text-align: center;
+  display: block;
+}
+
+.locked-card {
+  border-color: rgba(255, 224, 138, 0.55);
+}
+
+.locked-card img {
+  filter: grayscale(0.65) brightness(0.55);
+}
+
+.locked-card::after {
+  content: "LOCKED";
+  position: absolute;
+  inset: auto 10px 10px auto;
+  background: rgba(0, 0, 0, 0.72);
+  border: 1px solid var(--yellow);
+  color: var(--yellow);
+  border-radius: 8px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.52rem;
+}
+
+.shop-card h2 {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--yellow);
+}
+
+.shop-card p {
+  margin: 0;
+  font-size: 0.62rem;
+  line-height: 1.8;
+  color: #ece8ff;
+}
+
+.status-text {
+  min-height: 1.3rem;
+  font-size: 0.62rem;
+  color: var(--lime);
+}
+
+body.retro-theme {
+  --bg-1: #261800;
+  --bg-2: #4a2a0b;
+  --cyan: #fdb347;
+  --pink: #fc6d1e;
+  --yellow: #ffe08a;
+  --lime: #ffbe55;
+  --white: #fff2c4;
+  --panel: rgba(66, 29, 4, 0.84);
+  --game-bg: #1f1308;
+  --game-grid: rgba(255, 187, 95, 0.14);
+  --snake-head: #ffe08a;
+  --snake-body: #fdb347;
+  --snake-food: #fc6d1e;
+  --tile-empty: #5d2e0a;
+  --tile-low: #f6ad55;
+  --tile-mid: #fbc57a;
+  --tile-high: #ffd993;
+  --tile-ultra: #ff8f43;
+  --tile-max: #ff6d33;
+}
+
+body.retro-theme {
+  background:
+    radial-gradient(circle at 15% 15%, rgba(255, 173, 66, 0.2) 0%, transparent 26%),
+    radial-gradient(circle at 80% 20%, rgba(255, 116, 64, 0.2) 0%, transparent 30%),
+    linear-gradient(130deg, var(--bg-1), var(--bg-2));
+}
+
+body.retro-theme .hero-title,
+body.retro-theme .menu-title,
+body.retro-theme .game-heading {
+  filter: none;
+  text-shadow: 0 0 0 transparent;
+}
+
+body.retro-theme .game-canvas,
+body.retro-theme .game-card,
+body.retro-theme .shop-card {
+  box-shadow: none;
+}
+
+body.retro-theme .game-card img {
+  filter: sepia(1) saturate(1.8) hue-rotate(-16deg) contrast(1.08) brightness(0.96);
+}
+
 @media (max-width: 780px) {
   .game-card img {
     height: 195px;
@@ -280,6 +439,21 @@ body::before {
 }
 
 @media (max-width: 640px) {
+  .top-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .top-actions {
+    align-items: stretch;
+  }
+
+  .small-button,
+  .back-button {
+    width: 100%;
+    text-align: center;
+  }
+
   .touch-controls {
     display: grid;
   }

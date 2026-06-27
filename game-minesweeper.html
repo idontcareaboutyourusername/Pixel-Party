@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pixel Party - Minesweeper</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bungee+Shade&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    #mineBoard {
+      display: grid;
+      grid-template-columns: repeat(10, 34px);
+      gap: 4px;
+      padding: 12px;
+    }
+    .mine-cell {
+      width: 34px;
+      height: 34px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(0, 0, 0, 0.4);
+      color: var(--white);
+      font-family: inherit;
+      font-size: 0.6rem;
+      cursor: pointer;
+    }
+    .mine-cell.revealed {
+      background: rgba(255, 255, 255, 0.08);
+      cursor: default;
+    }
+  </style>
+</head>
+<body class="game-page" data-requires-game="minesweeper">
+  <div class="top-bar">
+    <span class="pill">Total Points: <strong data-points-display>0</strong></span>
+    <div class="top-actions">
+      <button class="small-button" data-theme-toggle style="display:none;">Use Retro Theme</button>
+      <a href="shop.html" class="small-button">Shop</a>
+      <a href="pixel-party.html" class="back-button">Return to Home Page</a>
+    </div>
+  </div>
+
+  <main class="game-wrapper">
+    <h1 class="game-heading">Minesweeper</h1>
+    <div class="meta">
+      <span class="pill">Revealed: <strong id="revealedCount">0</strong></span>
+      <span class="pill">Flags: <strong id="flagCount">0</strong></span>
+      <button id="resetBtn" class="game-button">New Board</button>
+    </div>
+    <section id="mineBoard" class="panel" aria-label="Minesweeper board"></section>
+    <p class="instructions">Left-click to reveal. Right-click to flag. Clear all safe cells to win bonus points.</p>
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    const SIZE = 10;
+    const MINES = 12;
+    const boardEl = document.getElementById("mineBoard");
+    const revealedEl = document.getElementById("revealedCount");
+    const flagEl = document.getElementById("flagCount");
+    const resetBtn = document.getElementById("resetBtn");
+    let board = [];
+    let gameOver = false;
+    let revealed = 0;
+    let flags = 0;
+
+    function makeCell() {
+      return { mine: false, flagged: false, revealed: false, nearby: 0 };
+    }
+
+    function init() {
+      gameOver = false;
+      revealed = 0;
+      flags = 0;
+      revealedEl.textContent = "0";
+      flagEl.textContent = "0";
+      board = Array.from({ length: SIZE }, () => Array.from({ length: SIZE }, makeCell));
+      placeMines();
+      calculateNearby();
+      render();
+    }
+
+    function placeMines() {
+      let placed = 0;
+      while (placed < MINES) {
+        const x = Math.floor(Math.random() * SIZE);
+        const y = Math.floor(Math.random() * SIZE);
+        if (board[y][x].mine) continue;
+        board[y][x].mine = true;
+        placed++;
+      }
+    }
+
+    function calculateNearby() {
+      for (let y = 0; y < SIZE; y++) {
+        for (let x = 0; x < SIZE; x++) {
+          let count = 0;
+          for (let dy = -1; dy <= 1; dy++) {
+            for (let dx = -1; dx <= 1; dx++) {
+              if (!dx && !dy) continue;
+              const nx = x + dx;
+              const ny = y + dy;
+              if (nx < 0 || ny < 0 || nx >= SIZE || ny >= SIZE) continue;
+              if (board[ny][nx].mine) count++;
+            }
+          }
+          board[y][x].nearby = count;
+        }
+      }
+    }
+
+    function floodReveal(startX, startY) {
+      const stack = [[startX, startY]];
+      while (stack.length) {
+        const [x, y] = stack.pop();
+        const cell = board[y][x];
+        if (cell.revealed || cell.flagged) continue;
+        cell.revealed = true;
+        revealed++;
+        window.pixelParty.addPoints(2);
+        if (cell.nearby !== 0) continue;
+        for (let dy = -1; dy <= 1; dy++) {
+          for (let dx = -1; dx <= 1; dx++) {
+            const nx = x + dx;
+            const ny = y + dy;
+            if (nx < 0 || ny < 0 || nx >= SIZE || ny >= SIZE) continue;
+            if (!board[ny][nx].revealed && !board[ny][nx].mine) stack.push([nx, ny]);
+          }
+        }
+      }
+    }
+
+    function revealCell(x, y) {
+      if (gameOver) return;
+      const cell = board[y][x];
+      if (cell.flagged || cell.revealed) return;
+      if (cell.mine) {
+        gameOver = true;
+        board.forEach((row) => row.forEach((c) => { if (c.mine) c.revealed = true; }));
+        render();
+        setTimeout(() => alert("Boom. New board?"), 20);
+        return;
+      }
+      floodReveal(x, y);
+      if (revealed === SIZE * SIZE - MINES) {
+        gameOver = true;
+        window.pixelParty.addPoints(150);
+        setTimeout(() => alert("Board cleared! +150 bonus points."), 20);
+      }
+      render();
+    }
+
+    function toggleFlag(x, y) {
+      if (gameOver) return;
+      const cell = board[y][x];
+      if (cell.revealed) return;
+      cell.flagged = !cell.flagged;
+      flags += cell.flagged ? 1 : -1;
+      render();
+    }
+
+    function render() {
+      boardEl.innerHTML = "";
+      revealedEl.textContent = String(revealed);
+      flagEl.textContent = String(flags);
+      board.forEach((row, y) => {
+        row.forEach((cell, x) => {
+          const btn = document.createElement("button");
+          btn.className = "mine-cell";
+          if (cell.revealed) btn.classList.add("revealed");
+          if (cell.flagged) btn.textContent = "F";
+          if (cell.revealed && cell.mine) btn.textContent = "*";
+          if (cell.revealed && !cell.mine && cell.nearby) btn.textContent = cell.nearby;
+          btn.addEventListener("click", () => revealCell(x, y));
+          btn.addEventListener("contextmenu", (e) => {
+            e.preventDefault();
+            toggleFlag(x, y);
+          });
+          boardEl.appendChild(btn);
+        });
+      });
+    }
+
+    resetBtn.addEventListener("click", init);
+    init();
+  </script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="420" viewBox="0 0 640 420">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#09112d"/>
+      <stop offset="100%" stop-color="#300933"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="420" fill="url(#bg)"/>
+  <rect x="38" y="26" width="564" height="368" rx="18" fill="#050a17" stroke="#2effff" stroke-width="4"/>
+  <g transform="translate(74 52)">
+    <g fill="#2effff">
+      <rect x="0" y="0" width="44" height="16"/>
+      <rect x="50" y="0" width="44" height="16"/>
+      <rect x="100" y="0" width="44" height="16"/>
+      <rect x="150" y="0" width="44" height="16"/>
+      <rect x="200" y="0" width="44" height="16"/>
+      <rect x="250" y="0" width="44" height="16"/>
+      <rect x="300" y="0" width="44" height="16"/>
+      <rect x="350" y="0" width="44" height="16"/>
+      <rect x="400" y="0" width="44" height="16"/>
+      <rect x="450" y="0" width="44" height="16"/>
+    </g>
+    <g fill="#6eff5f">
+      <rect x="0" y="24" width="44" height="16"/>
+      <rect x="50" y="24" width="44" height="16"/>
+      <rect x="100" y="24" width="44" height="16"/>
+      <rect x="150" y="24" width="44" height="16"/>
+      <rect x="200" y="24" width="44" height="16"/>
+      <rect x="250" y="24" width="44" height="16"/>
+      <rect x="300" y="24" width="44" height="16"/>
+      <rect x="350" y="24" width="44" height="16"/>
+      <rect x="400" y="24" width="44" height="16"/>
+      <rect x="450" y="24" width="44" height="16"/>
+    </g>
+    <rect x="204" y="286" width="94" height="12" fill="#fff033"/>
+    <circle cx="250" cy="244" r="8" fill="#ff3dbf"/>
+  </g>
+  <text x="320" y="380" fill="#fff033" font-family="monospace" font-size="24" text-anchor="middle">COMBO x4</text>
+</svg>

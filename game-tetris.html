@@ -10,7 +10,14 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body class="game-page">
-  <a href="pixel-party.html" class="back-button">Return to Home Page</a>
+  <div class="top-bar">
+    <span class="pill">Total Points: <strong data-points-display>0</strong></span>
+    <div class="top-actions">
+      <button class="small-button" data-theme-toggle style="display:none;">Use Retro Theme</button>
+      <a href="shop.html" class="small-button">Shop</a>
+      <a href="pixel-party.html" class="back-button">Return to Home Page</a>
+    </div>
+  </div>
 
   <main class="game-wrapper">
     <h1 class="game-heading">Tetris</h1>
@@ -19,9 +26,10 @@
       <button id="resetBtn" class="game-button">New Run</button>
     </div>
     <canvas id="tetrisCanvas" class="game-canvas" width="300" height="600" aria-label="Tetris game"></canvas>
-    <p class="instructions">Left/Right to move, Down to drop, Up or Space to rotate. Clear lines for points.</p>
+    <p class="instructions">Left/Right to move, Down to drop, Up or Space to rotate. Every row cleared gives persistent points.</p>
   </main>
 
+  <script src="app.js"></script>
   <script>
     const canvas = document.getElementById("tetrisCanvas");
     const ctx = canvas.getContext("2d");
@@ -44,6 +52,17 @@
     const palette = ["#2effff", "#6eff5f", "#fff033", "#ff8d46", "#ff3dbf", "#9a6aff", "#52b6ff"];
     let board, current, dropTimer, score;
 
+    function themeVar(name, fallback) {
+      return getComputedStyle(document.body).getPropertyValue(name).trim() || fallback;
+    }
+
+    function getPalette() {
+      if (document.body.classList.contains("retro-theme")) {
+        return ["#f6ad55", "#ffd993", "#ffe08a", "#ff8f43", "#fc6d1e", "#d78a46", "#fbc57a"];
+      }
+      return palette;
+    }
+
     function createBoard() {
       return Array.from({ length: ROWS }, () => Array(COLS).fill(0));
     }
@@ -52,7 +71,7 @@
       const index = Math.floor(Math.random() * pieces.length);
       return {
         shape: pieces[index].map((row) => row.slice()),
-        color: palette[index],
+        colorIndex: index,
         x: 3,
         y: 0
       };
@@ -75,7 +94,7 @@
       current.shape.forEach((row, y) => {
         row.forEach((val, x) => {
           if (val) {
-            board[current.y + y][current.x + x] = current.color;
+            board[current.y + y][current.x + x] = current.colorIndex + 1;
           }
         });
       });
@@ -94,6 +113,7 @@
       if (lines) {
         score += [0, 100, 300, 500, 800][lines];
         scoreEl.textContent = score;
+        window.pixelParty.addPoints(lines * 40);
       }
     }
 
@@ -110,11 +130,15 @@
     }
 
     function draw() {
-      ctx.fillStyle = "#04020f";
+      ctx.fillStyle = themeVar("--game-bg", "#04020f");
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      board.forEach((row, y) => row.forEach((color, x) => color && drawCell(x, y, color)));
+      const activePalette = getPalette();
+      board.forEach((row, y) => row.forEach((value, x) => {
+        if (!value) return;
+        drawCell(x, y, activePalette[value - 1]);
+      }));
       current.shape.forEach((row, y) => row.forEach((val, x) => {
-        if (val) drawCell(current.x + x, current.y + y, current.color);
+        if (val) drawCell(current.x + x, current.y + y, activePalette[current.colorIndex]);
       }));
     }
 
@@ -178,6 +202,7 @@
     });
 
     resetBtn.addEventListener("click", reset);
+    window.addEventListener("pixelparty:themechange", draw);
     reset();
   </script>
 </body>

@@ -10,7 +10,14 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body class="game-page">
-  <a href="pixel-party.html" class="back-button">Return to Home Page</a>
+  <div class="top-bar">
+    <span class="pill">Total Points: <strong data-points-display>0</strong></span>
+    <div class="top-actions">
+      <button class="small-button" data-theme-toggle style="display:none;">Use Retro Theme</button>
+      <a href="shop.html" class="small-button">Shop</a>
+      <a href="pixel-party.html" class="back-button">Return to Home Page</a>
+    </div>
+  </div>
 
   <main class="game-wrapper">
     <h1 class="game-heading">Snake Game</h1>
@@ -21,15 +28,16 @@
     <canvas id="snakeCanvas" class="game-canvas" width="420" height="420" aria-label="Snake game"></canvas>
     <div class="touch-controls">
       <span></span>
-      <button data-dir="up">↑</button>
+      <button data-dir="up">&uarr;</button>
       <span></span>
-      <button data-dir="left">←</button>
-      <button data-dir="down">↓</button>
-      <button data-dir="right">→</button>
+      <button data-dir="left">&larr;</button>
+      <button data-dir="down">&darr;</button>
+      <button data-dir="right">&rarr;</button>
     </div>
-    <p class="instructions">Move with arrow keys or WASD. Eat glowing food and avoid walls and your tail.</p>
+    <p class="instructions">Move with arrow keys or WASD. Eat glowing food and avoid walls and your tail. Each snack grants points.</p>
   </main>
 
+  <script src="app.js"></script>
   <script>
     const canvas = document.getElementById("snakeCanvas");
     const ctx = canvas.getContext("2d");
@@ -38,6 +46,10 @@
     const cell = 21;
     const cells = canvas.width / cell;
     let snake, dir, food, score, timer;
+
+    function themeVar(name, fallback) {
+      return getComputedStyle(document.body).getPropertyValue(name).trim() || fallback;
+    }
 
     function randomCell() {
       return Math.floor(Math.random() * cells);
@@ -72,6 +84,7 @@
       if (head.x === food.x && head.y === food.y) {
         score += 10;
         scoreEl.textContent = score;
+        window.pixelParty.addPoints(12);
         do {
           food = { x: randomCell(), y: randomCell() };
         } while (snake.some((segment) => segment.x === food.x && segment.y === food.y));
@@ -87,10 +100,10 @@
     }
 
     function draw() {
-      ctx.fillStyle = "#04020f";
+      ctx.fillStyle = themeVar("--game-bg", "#04020f");
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      ctx.strokeStyle = "rgba(46,255,255,0.08)";
+      ctx.strokeStyle = themeVar("--game-grid", "rgba(46,255,255,0.08)");
       for (let i = 0; i <= cells; i++) {
         ctx.beginPath();
         ctx.moveTo(i * cell, 0);
@@ -103,15 +116,16 @@
       }
 
       snake.forEach((segment, idx) => {
-        ctx.fillStyle = idx === 0 ? "#6eff5f" : "#2effff";
-        ctx.shadowColor = idx === 0 ? "#6eff5f" : "#2effff";
+        const snakeColor = idx === 0 ? themeVar("--snake-head", "#6eff5f") : themeVar("--snake-body", "#2effff");
+        ctx.fillStyle = snakeColor;
+        ctx.shadowColor = snakeColor;
         ctx.shadowBlur = 8;
         ctx.fillRect(segment.x * cell + 2, segment.y * cell + 2, cell - 4, cell - 4);
       });
 
       ctx.shadowBlur = 14;
-      ctx.fillStyle = "#ff3dbf";
-      ctx.shadowColor = "#ff3dbf";
+      ctx.fillStyle = themeVar("--snake-food", "#ff3dbf");
+      ctx.shadowColor = themeVar("--snake-food", "#ff3dbf");
       ctx.fillRect(food.x * cell + 3, food.y * cell + 3, cell - 6, cell - 6);
       ctx.shadowBlur = 0;
     }
@@ -135,6 +149,7 @@
     });
 
     resetBtn.addEventListener("click", reset);
+    window.addEventListener("pixelparty:themechange", draw);
     reset();
   </script>
 </body>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pixel Party - Shop</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bungee+Shade&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="game-page">
+  <div class="top-bar">
+    <span class="pill">Total Points: <strong data-points-display>0</strong></span>
+    <div class="top-actions">
+      <button class="small-button" data-theme-toggle style="display:none;">Use Retro Theme</button>
+      <a href="pixel-party.html" class="small-button">Home</a>
+    </div>
+  </div>
+
+  <main class="game-wrapper">
+    <h1 class="game-heading">Shop</h1>
+    <section class="shop-grid">
+      <article class="shop-card">
+        <h2>Retro Style Pack</h2>
+        <p>Cost: <strong>500 points</strong></p>
+        <p>Unlocks a super retro amber arcade look for the entire website.</p>
+        <button id="buyRetroBtn" class="game-button">Buy Retro Pack</button>
+        <p id="retroStatus" class="status-text"></p>
+      </article>
+      <article class="shop-card">
+        <h2>Minesweeper Game</h2>
+        <p>Cost: <strong>350 points</strong></p>
+        <p>Unlocks the Minesweeper mini-game from the home screen.</p>
+        <button id="buyMinesweeperBtn" class="game-button">Buy Minesweeper</button>
+        <p id="minesweeperStatus" class="status-text"></p>
+      </article>
+      <article class="shop-card">
+        <h2>Block Breaker Game</h2>
+        <p>Cost: <strong>350 points</strong></p>
+        <p>Unlocks the Block Breaker mini-game from the home screen.</p>
+        <button id="buyBlockBreakerBtn" class="game-button">Buy Block Breaker</button>
+        <p id="blockBreakerStatus" class="status-text"></p>
+      </article>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    const buyBtn = document.getElementById("buyRetroBtn");
+    const retroStatusEl = document.getElementById("retroStatus");
+    const minesweeperStatusEl = document.getElementById("minesweeperStatus");
+    const blockBreakerStatusEl = document.getElementById("blockBreakerStatus");
+    const buyMinesweeperBtn = document.getElementById("buyMinesweeperBtn");
+    const buyBlockBreakerBtn = document.getElementById("buyBlockBreakerBtn");
+    const RETRO_COST = 500;
+    const GAME_COST = 350;
+
+    function refreshShopState() {
+      const retroUnlocked = window.pixelParty.isRetroUnlocked();
+      const minesweeperUnlocked = window.pixelParty.isGameUnlocked("minesweeper");
+      const blockBreakerUnlocked = window.pixelParty.isGameUnlocked("block-breaker");
+
+      if (retroUnlocked) {
+        buyBtn.disabled = true;
+        buyBtn.textContent = "Purchased";
+        retroStatusEl.textContent = "Retro style unlocked. Use the theme toggle in the top bar.";
+      } else {
+        buyBtn.disabled = false;
+        buyBtn.textContent = "Buy Retro Pack";
+        retroStatusEl.textContent = "";
+      }
+
+      if (minesweeperUnlocked) {
+        buyMinesweeperBtn.disabled = true;
+        buyMinesweeperBtn.textContent = "Purchased";
+        minesweeperStatusEl.textContent = "Minesweeper unlocked.";
+      } else {
+        buyMinesweeperBtn.disabled = false;
+        buyMinesweeperBtn.textContent = "Buy Minesweeper";
+        minesweeperStatusEl.textContent = "";
+      }
+
+      if (blockBreakerUnlocked) {
+        buyBlockBreakerBtn.disabled = true;
+        buyBlockBreakerBtn.textContent = "Purchased";
+        blockBreakerStatusEl.textContent = "Block Breaker unlocked.";
+        return;
+      }
+      buyBlockBreakerBtn.disabled = false;
+      buyBlockBreakerBtn.textContent = "Buy Block Breaker";
+      blockBreakerStatusEl.textContent = "";
+    }
+
+    buyBtn.addEventListener("click", () => {
+      if (window.pixelParty.isRetroUnlocked()) {
+        refreshShopState();
+        return;
+      }
+      const paid = window.pixelParty.spendPoints(RETRO_COST);
+      if (!paid) {
+        retroStatusEl.textContent = "Not enough points yet. Play more games to earn points.";
+        return;
+      }
+      window.pixelParty.unlockRetroTheme();
+      window.pixelParty.setTheme("retro");
+      retroStatusEl.textContent = "Purchase complete. Retro theme is now active.";
+      refreshShopState();
+    });
+
+    buyMinesweeperBtn.addEventListener("click", () => {
+      if (window.pixelParty.isGameUnlocked("minesweeper")) {
+        refreshShopState();
+        return;
+      }
+      const paid = window.pixelParty.spendPoints(GAME_COST);
+      if (!paid) {
+        minesweeperStatusEl.textContent = "Not enough points yet. Play more games to earn points.";
+        return;
+      }
+      window.pixelParty.unlockGame("minesweeper");
+      minesweeperStatusEl.textContent = "Purchase complete. Minesweeper is unlocked.";
+      refreshShopState();
+    });
+
+    buyBlockBreakerBtn.addEventListener("click", () => {
+      if (window.pixelParty.isGameUnlocked("block-breaker")) {
+        refreshShopState();
+        return;
+      }
+      const paid = window.pixelParty.spendPoints(GAME_COST);
+      if (!paid) {
+        blockBreakerStatusEl.textContent = "Not enough points yet. Play more games to earn points.";
+        return;
+      }
+      window.pixelParty.unlockGame("block-breaker");
+      blockBreakerStatusEl.textContent = "Purchase complete. Block Breaker is unlocked.";
+      refreshShopState();
+    });
+
+    document.addEventListener("DOMContentLoaded", refreshShopState);
+    refreshShopState();
+  </script>
+</body>
+</html>

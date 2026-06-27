@@ -10,12 +10,20 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body class="home-page">
+  <div class="top-bar">
+    <span class="pill">Total Points: <strong data-points-display>0</strong></span>
+    <div class="top-actions">
+      <button class="small-button" data-theme-toggle style="display:none;">Use Retro Theme</button>
+      <a href="shop.html" class="small-button">Shop</a>
+    </div>
+  </div>
+
   <header class="hero" id="top">
     <h1 class="hero-title">Pixel Party</h1>
-    <p class="hero-subtitle">Jump into neon arcade chaos with classic mini-games.</p>
+    <p class="hero-subtitle">Jump into neon arcade chaos with classic mini-games and earn points to unlock themes.</p>
     <a href="#menu" class="scroll-indicator" aria-label="Scroll down to select game">
       <span>Scroll down to select game</span>
-      <span class="arrow">↓</span>
+      <span class="arrow">&darr;</span>
     </a>
   </header>
 
@@ -34,7 +42,18 @@
         <h3>Tetris</h3>
         <img src="assets/tetris-shot.svg" alt="Screenshot preview of Tetris">
       </a>
+      <a class="game-card" href="game-minesweeper.html" data-lock-game="minesweeper">
+        <h3>Minesweeper</h3>
+        <span class="lock-badge" data-lock-badge>Locked - Buy In Shop</span>
+        <img src="assets/minesweeper-shot.svg" alt="Screenshot preview of Minesweeper">
+      </a>
+      <a class="game-card" href="game-block-breaker.html" data-lock-game="block-breaker">
+        <h3>Block Breaker</h3>
+        <span class="lock-badge" data-lock-badge>Locked - Buy In Shop</span>
+        <img src="assets/block-breaker-shot.svg" alt="Screenshot preview of Block Breaker">
+      </a>
     </div>
   </main>
+  <script src="app.js"></script>
 </body>
 </html>

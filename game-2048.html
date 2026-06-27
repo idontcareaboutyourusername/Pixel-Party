@@ -30,7 +30,14 @@
   </style>
 </head>
 <body class="game-page">
-  <a href="pixel-party.html" class="back-button">Return to Home Page</a>
+  <div class="top-bar">
+    <span class="pill">Total Points: <strong data-points-display>0</strong></span>
+    <div class="top-actions">
+      <button class="small-button" data-theme-toggle style="display:none;">Use Retro Theme</button>
+      <a href="shop.html" class="small-button">Shop</a>
+      <a href="pixel-party.html" class="back-button">Return to Home Page</a>
+    </div>
+  </div>
 
   <main class="game-wrapper">
     <h1 class="game-heading">2048</h1>
@@ -39,9 +46,10 @@
       <button id="resetBtn" class="game-button">New Game</button>
     </div>
     <section id="board" class="panel" aria-label="2048 board"></section>
-    <p class="instructions">Use arrow keys or WASD. Combine matching numbers and reach 2048.</p>
+    <p class="instructions">Use arrow keys or WASD. Combine matching numbers and reach 2048. Merges also give account-free points.</p>
   </main>
 
+  <script src="app.js"></script>
   <script>
     const boardEl = document.getElementById("board");
     const scoreEl = document.getElementById("score");
@@ -49,20 +57,15 @@
     let board = [];
     let score = 0;
 
-    const colors = {
-      0: "#1d1b3c",
-      2: "#52f6ff",
-      4: "#66ff8e",
-      8: "#ffe263",
-      16: "#ff9e4f",
-      32: "#ff62ae",
-      64: "#d17dff",
-      128: "#7dfffc",
-      256: "#57ffa2",
-      512: "#fff45a",
-      1024: "#ff8b50",
-      2048: "#ff45e6"
-    };
+    function getTileColor(value) {
+      const css = getComputedStyle(document.body);
+      if (value === 0) return css.getPropertyValue("--tile-empty").trim() || "#1d1b3c";
+      if (value <= 2) return css.getPropertyValue("--tile-low").trim() || "#52f6ff";
+      if (value <= 4) return css.getPropertyValue("--tile-mid").trim() || "#66ff8e";
+      if (value <= 16) return css.getPropertyValue("--tile-high").trim() || "#ffe263";
+      if (value <= 256) return css.getPropertyValue("--tile-ultra").trim() || "#ff8b50";
+      return css.getPropertyValue("--tile-max").trim() || "#ff45e6";
+    }
 
     function initGame() {
       board = Array.from({ length: 4 }, () => [0, 0, 0, 0]);
@@ -103,6 +106,7 @@
 
     function move(direction) {
       const before = JSON.stringify(board);
+      const previousScore = score;
 
       let moved = false;
       if (direction === "left") {
@@ -138,6 +142,10 @@
       if (moved) {
         spawnTile();
         render();
+        const gainedScore = score - previousScore;
+        if (gainedScore > 0) {
+          window.pixelParty.addPoints(Math.max(1, Math.floor(gainedScore / 8)));
+        }
         if (isGameOver()) {
           setTimeout(() => alert("Game Over! Start a new game to play again."), 20);
         }
@@ -161,7 +169,7 @@
         const tile = document.createElement("div");
         tile.className = "tile";
         tile.textContent = value ? value : "";
-        tile.style.background = colors[value] || "#ffffff";
+        tile.style.background = getTileColor(value);
         tile.style.color = value >= 8 ? "#16011f" : "#07131d";
         boardEl.appendChild(tile);
       });
@@ -177,6 +185,7 @@
     });
 
     resetBtn.addEventListener("click", initGame);
+    window.addEventListener("pixelparty:themechange", render);
     initGame();
   </script>
 </body>
