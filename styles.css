@@ -1,0 +1,286 @@
+:root {
+  --bg-1: #070316;
+  --bg-2: #130534;
+  --cyan: #2effff;
+  --pink: #ff3dbf;
+  --yellow: #fff033;
+  --lime: #6eff5f;
+  --white: #f9fcff;
+  --panel: rgba(18, 9, 45, 0.78);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--white);
+  font-family: "Press Start 2P", cursive;
+  background:
+    radial-gradient(circle at 15% 15%, rgba(46, 255, 255, 0.2) 0%, transparent 26%),
+    radial-gradient(circle at 80% 20%, rgba(255, 61, 191, 0.2) 0%, transparent 30%),
+    radial-gradient(circle at 40% 80%, rgba(255, 240, 51, 0.14) 0%, transparent 32%),
+    linear-gradient(130deg, var(--bg-1), var(--bg-2));
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.hero {
+  min-height: 100vh;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  gap: 1.4rem;
+  position: relative;
+  padding: 1.2rem;
+}
+
+.hero-title {
+  margin: 0;
+  font-family: "Bungee Shade", cursive;
+  font-size: clamp(2.8rem, 10vw, 7.4rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, var(--cyan), var(--pink), var(--yellow), var(--lime), var(--cyan));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 16px rgba(46, 255, 255, 0.6));
+  animation: glowShift 6s linear infinite;
+}
+
+@keyframes glowShift {
+  from {
+    filter: drop-shadow(0 0 8px rgba(46, 255, 255, 0.7));
+  }
+  50% {
+    filter: drop-shadow(0 0 20px rgba(255, 61, 191, 0.9));
+  }
+  to {
+    filter: drop-shadow(0 0 8px rgba(110, 255, 95, 0.7));
+  }
+}
+
+.hero-subtitle {
+  max-width: 52rem;
+  margin: 0 auto;
+  color: #d6d5ff;
+  font-size: clamp(0.72rem, 1.6vw, 1rem);
+  line-height: 1.9;
+}
+
+.scroll-indicator {
+  position: absolute;
+  bottom: 1.4rem;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--yellow);
+  text-decoration: none;
+  text-shadow: 0 0 10px rgba(255, 240, 51, 0.8);
+  display: grid;
+  gap: 0.5rem;
+  justify-items: center;
+  font-size: clamp(0.56rem, 1.2vw, 0.78rem);
+}
+
+.scroll-indicator .arrow {
+  font-size: 1.3rem;
+  animation: bounce 1.6s infinite;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+.menu-section {
+  min-height: 100vh;
+  padding: 4rem 1.2rem 3rem;
+}
+
+.menu-title {
+  margin: 0 0 2.5rem;
+  text-align: center;
+  font-family: "Bungee Shade", cursive;
+  font-size: clamp(1.8rem, 6vw, 3.2rem);
+  color: var(--cyan);
+  text-shadow: 0 0 16px rgba(46, 255, 255, 0.6);
+}
+
+.game-grid {
+  width: min(1200px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.3rem;
+}
+
+.game-card {
+  text-decoration: none;
+  color: var(--white);
+  background: var(--panel);
+  border: 2px solid rgba(46, 255, 255, 0.45);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 0 16px rgba(46, 255, 255, 0.28), inset 0 0 16px rgba(255, 61, 191, 0.15);
+  transform: translateY(0);
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.game-card:hover,
+.game-card:focus-visible {
+  transform: translateY(-8px);
+  border-color: var(--yellow);
+  box-shadow: 0 0 24px rgba(255, 240, 51, 0.5), inset 0 0 18px rgba(255, 61, 191, 0.28);
+}
+
+.game-card h3 {
+  margin: 0;
+  padding: 1rem 1rem 0.7rem;
+  background: linear-gradient(90deg, rgba(46, 255, 255, 0.14), rgba(255, 61, 191, 0.14));
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.game-card img {
+  display: block;
+  width: 100%;
+  height: 230px;
+  object-fit: cover;
+}
+
+.game-page {
+  padding: 1rem;
+  min-height: 100vh;
+}
+
+.back-button {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  color: var(--white);
+  text-decoration: none;
+  border: 2px solid var(--cyan);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.45);
+  padding: 0.7rem 0.9rem;
+  font-size: 0.62rem;
+  z-index: 10;
+  box-shadow: 0 0 12px rgba(46, 255, 255, 0.4);
+}
+
+.game-wrapper {
+  width: min(900px, 100%);
+  margin: 3.6rem auto 1.5rem;
+  display: grid;
+  gap: 1rem;
+  justify-items: center;
+  text-align: center;
+}
+
+.game-heading {
+  margin: 0;
+  font-family: "Bungee Shade", cursive;
+  color: var(--pink);
+  text-shadow: 0 0 14px rgba(255, 61, 191, 0.7);
+  font-size: clamp(1.5rem, 5vw, 2.7rem);
+}
+
+.panel {
+  background: var(--panel);
+  border: 2px solid rgba(255, 240, 51, 0.4);
+  border-radius: 16px;
+  padding: 0.9rem;
+  box-shadow: 0 0 20px rgba(255, 240, 51, 0.2);
+}
+
+.meta {
+  display: flex;
+  gap: 0.7rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.pill {
+  padding: 0.55rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid rgba(46, 255, 255, 0.5);
+  background: rgba(0, 0, 0, 0.36);
+  font-size: 0.62rem;
+}
+
+.game-button {
+  border: 2px solid var(--lime);
+  background: rgba(110, 255, 95, 0.14);
+  color: var(--white);
+  border-radius: 12px;
+  padding: 0.65rem 0.95rem;
+  font-family: inherit;
+  cursor: pointer;
+  font-size: 0.62rem;
+}
+
+.game-button:hover {
+  box-shadow: 0 0 14px rgba(110, 255, 95, 0.6);
+}
+
+.game-canvas {
+  border: 3px solid var(--cyan);
+  box-shadow: 0 0 24px rgba(46, 255, 255, 0.5);
+  background: #03040c;
+  image-rendering: pixelated;
+}
+
+.instructions {
+  margin: 0;
+  color: #e0dbff;
+  font-size: 0.6rem;
+  line-height: 1.7;
+}
+
+.touch-controls {
+  display: none;
+  grid-template-columns: repeat(3, 50px);
+  gap: 6px;
+  justify-content: center;
+}
+
+.touch-controls button {
+  font-family: inherit;
+  font-size: 0.8rem;
+  color: var(--white);
+  border: 1px solid var(--cyan);
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  padding: 0.5rem 0;
+}
+
+@media (max-width: 780px) {
+  .game-card img {
+    height: 195px;
+  }
+}
+
+@media (max-width: 640px) {
+  .touch-controls {
+    display: grid;
+  }
+}
